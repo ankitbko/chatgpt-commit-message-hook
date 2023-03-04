@@ -9,4 +9,4 @@ Git hook that calls ChatGPT to generate commit message based on staged content.
 # Usage
 Run 'git commit' and an editor will open with generated commit message.
 
-Run 'git commit -m <Your message>' and ChatGPT will take your message into consideration while generating the commit message.
+Run 'git commit -m Your_message' and ChatGPT will take your message into consideration while generating the commit message.
