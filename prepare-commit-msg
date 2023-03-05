@@ -12,9 +12,14 @@ import sys
 # To enable this hook, rename this file to "prepare-commit-msg" and place it in .git/hooks/
 COMMIT_MSG_FILE = sys.argv[1]
 COMMIT_MSG_SOURCE = sys.argv[2] if len(sys.argv) > 2 else ""
+MAX_CHAR_COUNT = 10000
 
 # Get the diff of staged changes
 diff = subprocess.check_output(["git", "diff", "--staged"]).decode("utf-8")
+
+# Get stat of staged changes instead of full diff if diff length is more than 10000 characters
+if len(diff) > MAX_CHAR_COUNT:
+    diff = subprocess.check_output(["git", "diff", "--staged", "--stat"]).decode("utf-8")
 
 # Set your ChatGPT API endpoint and key
 chatgpt_api_endpoint = "https://api.openai.com/v1/completions"
@@ -29,7 +34,7 @@ if COMMIT_MSG_SOURCE == "message":
     with open(COMMIT_MSG_FILE, 'r') as f:
         user_commit_msg = f.read().strip()
 
-prompt = f"Suggest a commit message without any prefix for these changes:\n{diff}\n"
+prompt = f"Suggest a commit message without any prefix for these changes:\n{diff[:MAX_CHAR_COUNT]}\n"
 if user_commit_msg:
     prompt += f"\nThe user has already specified this commit message: {user_commit_msg}\n"
 
